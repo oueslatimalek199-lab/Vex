@@ -1,4 +1,4 @@
-# Pulse — Mini Social Media Platform
+# Vex — Mini Social Media Platform
 
 A full-stack social media app built with **Express.js** + **HTML/CSS/JS**.
 
