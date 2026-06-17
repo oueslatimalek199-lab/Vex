@@ -1,0 +1,1358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vex — Social</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap');
+
+  :root {
+    --bg: #0D0F14;
+    --surface: #141720;
+    --surface2: #1C2030;
+    --border: #252A3A;
+    --violet: #7C3AED;
+    --violet-light: #9F67FF;
+    --pink: #EC4899;
+    --text: #E8EAEF;
+    --text-muted: #6B7280;
+    --text-soft: #9CA3AF;
+    --success: #10B981;
+    --danger: #EF4444;
+    --gradient: linear-gradient(135deg, #7C3AED, #EC4899);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  /* ─── AUTH SCREEN ─── */
+  #auth-screen {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg);
+    background-image: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(124,58,237,0.15), transparent),
+                      radial-gradient(ellipse 60% 40% at 80% 80%, rgba(236,72,153,0.08), transparent);
+    padding: 20px;
+  }
+
+  .auth-card {
+    width: 100%;
+    max-width: 420px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 40px;
+  }
+
+  .auth-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 32px;
+  }
+
+  .auth-logo-icon {
+    width: 40px;
+    height: 40px;
+    background: var(--gradient);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 18px;
+    color: white;
+  }
+
+  .auth-logo-name {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 24px;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .auth-tabs {
+    display: flex;
+    gap: 4px;
+    background: var(--surface2);
+    border-radius: 10px;
+    padding: 4px;
+    margin-bottom: 28px;
+  }
+
+  .auth-tab {
+    flex: 1;
+    padding: 8px;
+    border: none;
+    background: transparent;
+    border-radius: 8px;
+    color: var(--text-muted);
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .auth-tab.active {
+    background: var(--violet);
+    color: white;
+  }
+
+  .form-group { margin-bottom: 16px; }
+
+  .form-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 6px;
+  }
+
+  .form-input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 11px 14px;
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .form-input:focus { border-color: var(--violet); }
+  .form-input::placeholder { color: var(--text-muted); }
+
+  .form-error {
+    background: rgba(239,68,68,0.1);
+    border: 1px solid rgba(239,68,68,0.3);
+    border-radius: 8px;
+    padding: 10px 14px;
+    color: #FCA5A5;
+    font-size: 13px;
+    margin-bottom: 16px;
+    display: none;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 11px 20px;
+    border-radius: 10px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+    text-decoration: none;
+  }
+
+  .btn-primary {
+    background: var(--gradient);
+    color: white;
+    width: 100%;
+  }
+
+  .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+
+  .btn-ghost {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-soft);
+  }
+
+  .btn-ghost:hover { border-color: var(--violet); color: var(--violet-light); }
+
+  .btn-sm { padding: 7px 14px; font-size: 12px; }
+
+  .btn-follow {
+    background: var(--gradient);
+    color: white;
+  }
+
+  .btn-follow.following {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-soft);
+  }
+
+  .btn-follow:hover { opacity: 0.85; }
+
+  /* ─── APP LAYOUT ─── */
+  #app-screen { display: none; min-height: 100vh; }
+
+  .app-layout {
+    display: grid;
+    grid-template-columns: 240px 1fr 280px;
+    max-width: 1100px;
+    margin: 0 auto;
+    min-height: 100vh;
+    gap: 0;
+    padding: 0 20px;
+  }
+
+  /* ─── SIDEBAR ─── */
+  .sidebar {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 24px 20px 24px 0;
+    border-right: 1px solid var(--border);
+  }
+
+  .sidebar-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 36px;
+    padding-left: 4px;
+  }
+
+  .sidebar-logo-icon {
+    width: 36px;
+    height: 36px;
+    background: var(--gradient);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 16px;
+    color: white;
+    flex-shrink: 0;
+  }
+
+  .sidebar-logo-name {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 20px;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--text-soft);
+    font-weight: 500;
+    margin-bottom: 2px;
+    border: none;
+    background: transparent;
+    width: 100%;
+    text-align: left;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+  }
+
+  .nav-item:hover { background: var(--surface2); color: var(--text); }
+
+  .nav-item.active {
+    background: rgba(124,58,237,0.15);
+    color: var(--violet-light);
+  }
+
+  .nav-icon { font-size: 18px; width: 22px; text-align: center; }
+
+  .sidebar-user {
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: var(--surface);
+  }
+
+  .sidebar-user:hover { border-color: var(--violet); }
+
+  /* ─── MAIN FEED ─── */
+  .main-content {
+    padding: 24px 24px;
+    border-right: 1px solid var(--border);
+  }
+
+  .feed-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .feed-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+  }
+
+  .feed-toggle {
+    display: flex;
+    gap: 4px;
+    background: var(--surface2);
+    border-radius: 8px;
+    padding: 3px;
+  }
+
+  .feed-toggle-btn {
+    padding: 5px 14px;
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    border-radius: 6px;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.2s;
+  }
+
+  .feed-toggle-btn.active { background: var(--surface); color: var(--text); }
+
+  /* ─── COMPOSE ─── */
+  .compose-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+
+  .compose-row {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .compose-textarea {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    resize: none;
+    outline: none;
+    line-height: 1.6;
+    min-height: 60px;
+  }
+
+  .compose-textarea::placeholder { color: var(--text-muted); }
+
+  .compose-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+    gap: 10px;
+  }
+
+  .char-count {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  /* ─── POST CARD ─── */
+  .post-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 12px;
+    transition: border-color 0.2s;
+  }
+
+  .post-card:hover { border-color: var(--border); }
+
+  .post-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  .post-author {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+  }
+
+  .post-author:hover .author-name { color: var(--violet-light); }
+
+  .author-name {
+    font-weight: 600;
+    font-size: 14px;
+    transition: color 0.2s;
+  }
+
+  .post-time {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  .post-content {
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--text);
+    margin-bottom: 16px;
+    word-break: break-word;
+  }
+
+  .post-content .hashtag {
+    color: var(--violet-light);
+    cursor: pointer;
+  }
+
+  .post-actions {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .action-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 13px;
+    cursor: pointer;
+    padding: 6px 10px;
+    border-radius: 8px;
+    transition: all 0.2s;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+  }
+
+  .action-btn:hover { background: var(--surface2); color: var(--text); }
+
+  .action-btn.liked { color: var(--pink); }
+  .action-btn.liked:hover { background: rgba(236,72,153,0.1); }
+  .action-btn .count { font-size: 12px; }
+
+  .delete-btn { margin-left: auto; color: var(--text-muted); }
+  .delete-btn:hover { color: var(--danger); background: rgba(239,68,68,0.1); }
+
+  /* ─── COMMENTS ─── */
+  .comments-section {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+  }
+
+  .comment-item {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+    align-items: flex-start;
+  }
+
+  .comment-body {
+    background: var(--surface2);
+    border-radius: 10px;
+    padding: 8px 12px;
+    flex: 1;
+  }
+
+  .comment-author {
+    font-weight: 600;
+    font-size: 12px;
+    color: var(--violet-light);
+    margin-bottom: 2px;
+  }
+
+  .comment-text { font-size: 13px; color: var(--text-soft); }
+
+  .comment-input-row {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  .comment-input {
+    flex: 1;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 8px 12px;
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    outline: none;
+  }
+
+  .comment-input:focus { border-color: var(--violet); }
+  .comment-input::placeholder { color: var(--text-muted); }
+
+  .comment-send {
+    background: var(--violet);
+    border: none;
+    color: white;
+    border-radius: 10px;
+    padding: 8px 14px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    transition: opacity 0.2s;
+  }
+
+  .comment-send:hover { opacity: 0.85; }
+
+  /* ─── AVATAR ─── */
+  .avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: var(--gradient);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 15px;
+    color: white;
+    flex-shrink: 0;
+    position: relative;
+  }
+
+  .avatar::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 50%;
+    background: var(--gradient);
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .avatar:hover::before { opacity: 1; }
+  .avatar-sm { width: 28px; height: 28px; font-size: 11px; }
+  .avatar-lg { width: 60px; height: 60px; font-size: 22px; }
+  .avatar-xl { width: 80px; height: 80px; font-size: 28px; }
+
+  /* ─── RIGHT PANEL ─── */
+  .right-panel {
+    padding: 24px 0 24px 24px;
+  }
+
+  .panel-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+
+  .panel-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 16px;
+  }
+
+  .suggest-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+
+  .suggest-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+  }
+
+  .suggest-info:hover .suggest-name { color: var(--violet-light); }
+
+  .suggest-name {
+    font-weight: 600;
+    font-size: 13px;
+    transition: color 0.2s;
+  }
+
+  .suggest-bio {
+    font-size: 11px;
+    color: var(--text-muted);
+    max-width: 130px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* ─── PROFILE VIEW ─── */
+  .profile-header {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 16px;
+  }
+
+  .profile-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  .profile-info { margin-left: 16px; flex: 1; }
+
+  .profile-username {
+    font-family: 'Syne', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .profile-bio {
+    font-size: 14px;
+    color: var(--text-soft);
+    margin-bottom: 12px;
+  }
+
+  .profile-stats {
+    display: flex;
+    gap: 24px;
+  }
+
+  .stat-item {
+    text-align: center;
+  }
+
+  .stat-value {
+    font-family: 'Syne', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* ─── TOAST ─── */
+  .toast-container {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .toast {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 18px;
+    font-size: 13px;
+    font-weight: 500;
+    animation: slideIn 0.3s ease;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  }
+
+  .toast.success { border-color: rgba(16,185,129,0.4); color: #6EE7B7; }
+  .toast.error { border-color: rgba(239,68,68,0.4); color: #FCA5A5; }
+
+  @keyframes slideIn {
+    from { transform: translateX(20px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+
+  /* ─── LOADING ─── */
+  .loading {
+    text-align: center;
+    padding: 40px;
+    color: var(--text-muted);
+  }
+
+  .spinner {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    border: 2px solid var(--border);
+    border-top-color: var(--violet);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-bottom: 8px;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .empty-state {
+    text-align: center;
+    padding: 48px 20px;
+    color: var(--text-muted);
+  }
+
+  .empty-icon { font-size: 40px; margin-bottom: 12px; }
+  .empty-text { font-size: 15px; }
+  .empty-sub { font-size: 13px; margin-top: 4px; color: var(--text-muted); }
+
+
+  /* ─── LOGOUT BUTTON ─── */
+  .logout-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    margin-top: 8px;
+    padding: 10px 14px;
+    background: transparent;
+    border: 1px solid rgba(239,68,68,0.25);
+    border-radius: 10px;
+    color: #F87171;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .logout-btn:hover {
+    background: rgba(239,68,68,0.1);
+    border-color: rgba(239,68,68,0.5);
+  }
+
+  /* ─── SEARCH BAR ─── */
+  .search-bar-wrap {
+    position: relative;
+    margin-bottom: 20px;
+  }
+  .search-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 15px;
+    pointer-events: none;
+  }
+  .search-input {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 14px 12px 42px;
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .search-input:focus { border-color: var(--violet); }
+  .search-input::placeholder { color: var(--text-muted); }
+
+  /* ─── UTILS ─── */
+  .hidden { display: none !important; }
+  .flex { display: flex; }
+  .items-center { align-items: center; }
+  .gap-2 { gap: 8px; }
+</style>
+</head>
+<body>
+
+<!-- AUTH SCREEN -->
+<div id="auth-screen">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <div class="auth-logo-icon">V</div>
+      <span class="auth-logo-name">Vex</span>
+    </div>
+
+    <div class="auth-tabs">
+      <button class="auth-tab active" onclick="switchTab('login')">Sign In</button>
+      <button class="auth-tab" onclick="switchTab('register')">Sign Up</button>
+    </div>
+
+    <div id="auth-error" class="form-error"></div>
+
+    <!-- LOGIN FORM -->
+    <div id="login-form">
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input type="email" id="login-email" class="form-input" placeholder="you@example.com" value="loulou@isgs.tn">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input type="password" id="login-password" class="form-input" placeholder="••••••••" value="password123">
+      </div>
+      <button class="btn btn-primary" onclick="login()">Sign In →</button>
+    </div>
+
+    <!-- REGISTER FORM -->
+    <div id="register-form" class="hidden">
+      <div class="form-group">
+        <label class="form-label">Username</label>
+        <input type="text" id="reg-username" class="form-input" placeholder="@yourname">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input type="email" id="reg-email" class="form-input" placeholder="you@example.com">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input type="password" id="reg-password" class="form-input" placeholder="••••••••">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Bio <span style="color:var(--text-muted)">(optional)</span></label>
+        <input type="text" id="reg-bio" class="form-input" placeholder="Tell us about yourself...">
+      </div>
+      <button class="btn btn-primary" onclick="register()">Create Account →</button>
+    </div>
+  </div>
+</div>
+
+<!-- APP SCREEN -->
+<div id="app-screen">
+  <div class="app-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <div class="sidebar-logo-icon">V</div>
+        <span class="sidebar-logo-name">Vex</span>
+      </div>
+
+      <nav>
+        <button class="nav-item active" id="nav-feed" onclick="showView('feed')">
+          <span class="nav-icon">🏠</span> Home
+        </button>
+        <button class="nav-item" id="nav-explore" onclick="showView('explore')">
+          <span class="nav-icon">🔍</span> Explore
+        </button>
+        <button class="nav-item" id="nav-profile" onclick="showView('profile')">
+          <span class="nav-icon">👤</span> Profile
+        </button>
+      </nav>
+
+      <div class="sidebar-user" onclick="showView('profile')">
+        <div class="avatar avatar-sm" id="sidebar-avatar"></div>
+        <div>
+          <div style="font-size:13px;font-weight:600" id="sidebar-username"></div>
+          <div style="font-size:11px;color:var(--text-muted)">View profile</div>
+        </div>
+      </div>
+      <button onclick="logout()" class="logout-btn">
+        <span style="font-size:16px">⏻</span> Sign Out
+      </button>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+      <!-- FEED VIEW -->
+      <div id="view-feed">
+        <div class="feed-header">
+          <span class="feed-title">Home</span>
+          <div class="feed-toggle">
+            <button class="feed-toggle-btn active" id="toggle-for-you" onclick="switchFeed('all')">All</button>
+            <button class="feed-toggle-btn" id="toggle-following" onclick="switchFeed('feed')">Following</button>
+          </div>
+        </div>
+
+        <!-- Compose -->
+        <div class="compose-card">
+          <div class="compose-row">
+            <div class="avatar" id="compose-avatar"></div>
+            <textarea class="compose-textarea" id="compose-text" placeholder="What's on your mind?" maxlength="280" oninput="updateCharCount()"></textarea>
+          </div>
+          <div class="compose-footer">
+            <span class="char-count"><span id="char-count">0</span>/280</span>
+            <button class="btn btn-primary" style="width:auto;padding:8px 20px" onclick="createPost()">Post</button>
+          </div>
+        </div>
+
+        <div id="posts-container">
+          <div class="loading"><div class="spinner"></div><br>Loading posts...</div>
+        </div>
+      </div>
+
+      <!-- EXPLORE VIEW -->
+      <div id="view-explore" class="hidden">
+        <div class="feed-header">
+          <span class="feed-title">Explore People</span>
+        </div>
+        <div class="search-bar-wrap">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="explore-search" class="search-input" placeholder="Search by username or bio..." oninput="filterExplore()">
+        </div>
+        <div id="explore-container">
+          <div class="loading"><div class="spinner"></div><br>Loading users...</div>
+        </div>
+      </div>
+
+      <!-- PROFILE VIEW -->
+      <div id="view-profile" class="hidden">
+        <div id="profile-container">
+          <div class="loading"><div class="spinner"></div><br>Loading profile...</div>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- RIGHT PANEL -->
+    <aside class="right-panel">
+      <div class="panel-card">
+        <div class="panel-title">Who to follow</div>
+        <div id="suggestions-container">
+          <div class="loading" style="padding:10px 0"><div class="spinner"></div></div>
+        </div>
+      </div>
+    </aside>
+
+  </div>
+</div>
+
+<div class="toast-container" id="toast-container"></div>
+
+<script>
+const API = '';
+let token = localStorage.getItem('vex_token');
+let currentUser = JSON.parse(localStorage.getItem('vex_user') || 'null');
+let currentView = 'feed';
+let feedMode = 'all';
+let viewingUsername = null;
+
+// ─── UTILS ───────────────────────────────────────────────────────────────────
+function api(path, options = {}) {
+  return fetch(API + path, {
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...options.headers
+    }
+  }).then(r => r.json());
+}
+
+function toast(msg, type = 'success') {
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.textContent = msg;
+  document.getElementById('toast-container').appendChild(el);
+  setTimeout(() => el.remove(), 3000);
+}
+
+function formatTime(iso) {
+  const diff = Date.now() - new Date(iso);
+  const m = Math.floor(diff / 60000);
+  if (m < 1) return 'just now';
+  if (m < 60) return `${m}m`;
+  if (m < 1440) return `${Math.floor(m/60)}h`;
+  return `${Math.floor(m/1440)}d`;
+}
+
+function formatContent(text) {
+  return text.replace(/(#\w+)/g, '<span class="hashtag">$1</span>');
+}
+
+// ─── AUTH ─────────────────────────────────────────────────────────────────────
+function switchTab(tab) {
+  document.querySelectorAll('.auth-tab').forEach((t, i) => {
+    t.classList.toggle('active', (i === 0 && tab === 'login') || (i === 1 && tab === 'register'));
+  });
+  document.getElementById('login-form').classList.toggle('hidden', tab !== 'login');
+  document.getElementById('register-form').classList.toggle('hidden', tab !== 'register');
+  document.getElementById('auth-error').style.display = 'none';
+}
+
+function showError(msg) {
+  const el = document.getElementById('auth-error');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+async function login() {
+  const email = document.getElementById('login-email').value;
+  const password = document.getElementById('login-password').value;
+  const data = await api('/api/auth/login', { method: 'POST', body: JSON.stringify({ email, password }) });
+  if (data.error) return showError(data.error);
+  token = data.token;
+  currentUser = data.user;
+  localStorage.setItem('vex_token', token);
+  localStorage.setItem('vex_user', JSON.stringify(currentUser));
+  initApp();
+}
+
+async function register() {
+  const username = document.getElementById('reg-username').value;
+  const email = document.getElementById('reg-email').value;
+  const password = document.getElementById('reg-password').value;
+  const bio = document.getElementById('reg-bio').value;
+  const data = await api('/api/auth/register', { method: 'POST', body: JSON.stringify({ username, email, password, bio }) });
+  if (data.error) return showError(data.error);
+  token = data.token;
+  currentUser = data.user;
+  localStorage.setItem('vex_token', token);
+  localStorage.setItem('vex_user', JSON.stringify(currentUser));
+  initApp();
+}
+
+function logout() {
+  token = null;
+  currentUser = null;
+  localStorage.removeItem('vex_token');
+  localStorage.removeItem('vex_user');
+  document.getElementById('auth-screen').style.display = 'flex';
+  document.getElementById('app-screen').style.display = 'none';
+}
+
+// ─── APP INIT ────────────────────────────────────────────────────────────────
+function initApp() {
+  document.getElementById('auth-screen').style.display = 'none';
+  document.getElementById('app-screen').style.display = 'block';
+  document.getElementById('sidebar-username').textContent = '@' + currentUser.username;
+  document.getElementById('sidebar-avatar').textContent = currentUser.avatar;
+  document.getElementById('compose-avatar').textContent = currentUser.avatar;
+  showView('feed');
+  loadSuggestions();
+}
+
+function showView(view) {
+  currentView = view;
+  ['feed', 'explore', 'profile'].forEach(v => {
+    document.getElementById(`view-${v}`).classList.toggle('hidden', v !== view);
+    document.getElementById(`nav-${v}`)?.classList.toggle('active', v === view);
+  });
+
+  if (view === 'feed') loadPosts();
+  if (view === 'explore') loadExplore();
+  if (view === 'profile') { viewingUsername = currentUser.username; loadProfile(currentUser.username); }
+}
+
+// ─── POSTS ───────────────────────────────────────────────────────────────────
+function updateCharCount() {
+  document.getElementById('char-count').textContent = document.getElementById('compose-text').value.length;
+}
+
+async function switchFeed(mode) {
+  feedMode = mode;
+  document.getElementById('toggle-for-you').classList.toggle('active', mode === 'all');
+  document.getElementById('toggle-following').classList.toggle('active', mode === 'feed');
+  loadPosts();
+}
+
+async function loadPosts() {
+  const container = document.getElementById('posts-container');
+  container.innerHTML = '<div class="loading"><div class="spinner"></div><br>Loading...</div>';
+  const endpoint = feedMode === 'feed' ? '/api/posts/feed' : '/api/posts';
+  const posts = await api(endpoint);
+  if (!Array.isArray(posts)) { container.innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-text">Error loading posts</div></div>'; return; }
+  if (posts.length === 0) {
+    container.innerHTML = '<div class="empty-state"><div class="empty-icon">🌌</div><div class="empty-text">No posts yet</div><div class="empty-sub">Follow people or be the first to post!</div></div>';
+    return;
+  }
+  container.innerHTML = posts.map(renderPost).join('');
+}
+
+function renderPost(post) {
+  const isOwner = post.author?.id === currentUser?.id;
+  const commentsHtml = post.comments.slice(-3).map(c => `
+    <div class="comment-item">
+      <div class="avatar avatar-sm">${c.author.avatar}</div>
+      <div class="comment-body">
+        <div class="comment-author">@${c.author.username}</div>
+        <div class="comment-text">${c.content}</div>
+      </div>
+    </div>
+  `).join('');
+
+  return `
+    <div class="post-card" id="post-${post.id}">
+      <div class="post-header">
+        <div class="post-author" onclick="openProfile('${post.author?.username}')">
+          <div class="avatar">${post.author?.avatar || '?'}</div>
+          <div>
+            <div class="author-name">@${post.author?.username || 'unknown'}</div>
+            <div class="post-time">${formatTime(post.createdAt)}</div>
+          </div>
+        </div>
+        ${isOwner ? `<button class="action-btn delete-btn" onclick="deletePost('${post.id}')" title="Delete">🗑</button>` : ''}
+      </div>
+      <div class="post-content">${formatContent(post.content)}</div>
+      <div class="post-actions">
+        <button class="action-btn ${post.isLiked ? 'liked' : ''}" id="like-btn-${post.id}" onclick="toggleLike('${post.id}', ${post.isLiked})">
+          ${post.isLiked ? '❤️' : '🤍'} <span class="count" id="likes-count-${post.id}">${post.likesCount}</span>
+        </button>
+        <button class="action-btn" onclick="toggleComments('${post.id}')">
+          💬 <span class="count">${post.commentsCount}</span>
+        </button>
+      </div>
+      <div class="comments-section hidden" id="comments-${post.id}">
+        <div id="comments-list-${post.id}">${commentsHtml}</div>
+        <div class="comment-input-row">
+          <input type="text" class="comment-input" id="comment-input-${post.id}" placeholder="Write a comment..." onkeydown="if(event.key==='Enter')submitComment('${post.id}')">
+          <button class="comment-send" onclick="submitComment('${post.id}')">Send</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+async function createPost() {
+  const content = document.getElementById('compose-text').value.trim();
+  if (!content) return;
+  const post = await api('/api/posts', { method: 'POST', body: JSON.stringify({ content }) });
+  if (post.error) return toast(post.error, 'error');
+  document.getElementById('compose-text').value = '';
+  document.getElementById('char-count').textContent = '0';
+  toast('Post published! 🚀');
+  loadPosts();
+}
+
+async function deletePost(postId) {
+  if (!confirm('Delete this post?')) return;
+  const data = await api(`/api/posts/${postId}`, { method: 'DELETE' });
+  if (data.error) return toast(data.error, 'error');
+  toast('Post deleted');
+  loadPosts();
+}
+
+async function toggleLike(postId, isLiked) {
+  const data = await api(`/api/posts/${postId}/like`, { method: 'POST' });
+  if (data.error) return;
+  const btn = document.getElementById(`like-btn-${postId}`);
+  const count = document.getElementById(`likes-count-${postId}`);
+  if (data.liked) {
+    btn.classList.add('liked');
+    btn.innerHTML = `❤️ <span class="count" id="likes-count-${postId}">${data.likesCount}</span>`;
+  } else {
+    btn.classList.remove('liked');
+    btn.innerHTML = `🤍 <span class="count" id="likes-count-${postId}">${data.likesCount}</span>`;
+  }
+}
+
+function toggleComments(postId) {
+  const section = document.getElementById(`comments-${postId}`);
+  section.classList.toggle('hidden');
+  if (!section.classList.contains('hidden')) {
+    document.getElementById(`comment-input-${postId}`)?.focus();
+  }
+}
+
+async function submitComment(postId) {
+  const input = document.getElementById(`comment-input-${postId}`);
+  const content = input.value.trim();
+  if (!content) return;
+  const data = await api(`/api/posts/${postId}/comments`, { method: 'POST', body: JSON.stringify({ content }) });
+  if (data.error) return toast(data.error, 'error');
+  const list = document.getElementById(`comments-list-${postId}`);
+  list.innerHTML += `
+    <div class="comment-item">
+      <div class="avatar avatar-sm">${data.author.avatar}</div>
+      <div class="comment-body">
+        <div class="comment-author">@${data.author.username}</div>
+        <div class="comment-text">${content}</div>
+      </div>
+    </div>
+  `;
+  input.value = '';
+}
+
+// ─── FOLLOW ───────────────────────────────────────────────────────────────────
+async function toggleFollow(userId, btn) {
+  const data = await api(`/api/users/${userId}/follow`, { method: 'POST' });
+  if (data.error) return toast(data.error, 'error');
+  if (data.following) {
+    btn.textContent = 'Following';
+    btn.classList.add('following');
+    toast('Following! 🎉');
+  } else {
+    btn.textContent = 'Follow';
+    btn.classList.remove('following');
+  }
+  loadSuggestions();
+}
+
+// ─── EXPLORE ─────────────────────────────────────────────────────────────────
+let allExploreUsers = [];
+
+async function loadExplore() {
+  const container = document.getElementById('explore-container');
+  container.innerHTML = '<div class="loading"><div class="spinner"></div><br>Loading...</div>';
+  const users = await api('/api/users');
+  if (!Array.isArray(users)) return;
+  allExploreUsers = users;
+  document.getElementById('explore-search').value = '';
+  renderExploreUsers(users);
+}
+
+function filterExplore() {
+  const q = document.getElementById('explore-search').value.toLowerCase().trim();
+  if (!q) return renderExploreUsers(allExploreUsers);
+  const filtered = allExploreUsers.filter(u =>
+    u.username.toLowerCase().includes(q) ||
+    (u.bio || '').toLowerCase().includes(q)
+  );
+  renderExploreUsers(filtered);
+}
+
+function renderExploreUsers(users) {
+  const container = document.getElementById('explore-container');
+  if (users.length === 0) {
+    container.innerHTML = '<div class="empty-state"><div class="empty-icon">🔍</div><div class="empty-text">No users found</div><div class="empty-sub">Try a different search</div></div>';
+    return;
+  }
+  container.innerHTML = users.map(u => `
+    <div class="panel-card" style="cursor:pointer;margin-bottom:12px">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div style="display:flex;align-items:center;gap:12px" onclick="openProfile('${u.username}')">
+          <div class="avatar avatar-lg">${u.avatar}</div>
+          <div>
+            <div style="font-weight:700;font-size:15px;margin-bottom:2px">@${u.username}</div>
+            <div style="font-size:13px;color:var(--text-soft);margin-bottom:8px">${u.bio || 'No bio yet'}</div>
+            <div style="font-size:12px;color:var(--text-muted)">${u.followersCount} followers</div>
+          </div>
+        </div>
+        <button class="btn btn-follow btn-sm ${u.isFollowing ? 'following' : ''}" onclick="event.stopPropagation();toggleFollow('${u.id}', this)">
+          ${u.isFollowing ? 'Following' : 'Follow'}
+        </button>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ─── SUGGESTIONS ─────────────────────────────────────────────────────────────
+async function loadSuggestions() {
+  const container = document.getElementById('suggestions-container');
+  const users = await api('/api/users');
+  if (!Array.isArray(users)) return;
+  const toShow = users.filter(u => !u.isFollowing).slice(0, 3);
+  if (toShow.length === 0) {
+    container.innerHTML = '<div style="color:var(--text-muted);font-size:13px">You follow everyone! 🎉</div>';
+    return;
+  }
+  container.innerHTML = toShow.map(u => `
+    <div class="suggest-item">
+      <div class="suggest-info" onclick="openProfile('${u.username}')">
+        <div class="avatar avatar-sm">${u.avatar}</div>
+        <div>
+          <div class="suggest-name">@${u.username}</div>
+          <div class="suggest-bio">${u.bio || 'No bio'}</div>
+        </div>
+      </div>
+      <button class="btn btn-follow btn-sm ${u.isFollowing ? 'following' : ''}" onclick="toggleFollow('${u.id}', this)">
+        ${u.isFollowing ? 'Following' : 'Follow'}
+      </button>
+    </div>
+  `).join('');
+}
+
+// ─── PROFILE ──────────────────────────────────────────────────────────────────
+async function openProfile(username) {
+  viewingUsername = username;
+  showViewRaw('profile');
+  loadProfile(username);
+}
+
+function showViewRaw(view) {
+  ['feed', 'explore', 'profile'].forEach(v => {
+    document.getElementById(`view-${v}`).classList.toggle('hidden', v !== view);
+    document.getElementById(`nav-${v}`)?.classList.toggle('active', v === view);
+  });
+}
+
+async function loadProfile(username) {
+  const container = document.getElementById('profile-container');
+  container.innerHTML = '<div class="loading"><div class="spinner"></div><br>Loading profile...</div>';
+  const user = await api(`/api/users/${username}`);
+  if (user.error) { container.innerHTML = '<div class="empty-state"><div class="empty-icon">😕</div><div class="empty-text">User not found</div></div>'; return; }
+
+  const isMe = user.id === currentUser.id;
+
+  container.innerHTML = `
+    <div class="profile-header">
+      <div class="profile-top">
+        <div style="display:flex;align-items:flex-start;gap:0">
+          <div class="avatar avatar-xl">${user.avatar}</div>
+          <div class="profile-info">
+            <div class="profile-username">@${user.username}</div>
+            <div class="profile-bio">${user.bio || 'No bio yet'}</div>
+            <div class="profile-stats">
+              <div class="stat-item"><div class="stat-value">${user.postsCount}</div><div class="stat-label">Posts</div></div>
+              <div class="stat-item"><div class="stat-value">${user.followersCount}</div><div class="stat-label">Followers</div></div>
+              <div class="stat-item"><div class="stat-value">${user.followingCount}</div><div class="stat-label">Following</div></div>
+            </div>
+          </div>
+        </div>
+        ${!isMe ? `<button class="btn btn-follow ${user.isFollowing ? 'following' : ''}" id="profile-follow-btn" onclick="toggleFollowProfile('${user.id}')">
+          ${user.isFollowing ? 'Following' : 'Follow'}
+        </button>` : ''}
+      </div>
+    </div>
+    <div id="profile-posts">
+      ${user.posts.length === 0
+        ? '<div class="empty-state"><div class="empty-icon">📝</div><div class="empty-text">No posts yet</div></div>'
+        : user.posts.map(renderPost).join('')
+      }
+    </div>
+  `;
+}
+
+async function toggleFollowProfile(userId) {
+  const btn = document.getElementById('profile-follow-btn');
+  const data = await api(`/api/users/${userId}/follow`, { method: 'POST' });
+  if (data.error) return toast(data.error, 'error');
+  if (data.following) {
+    btn.textContent = 'Following';
+    btn.classList.add('following');
+    toast('Following! 🎉');
+  } else {
+    btn.textContent = 'Follow';
+    btn.classList.remove('following');
+  }
+  loadSuggestions();
+  loadProfile(viewingUsername);
+}
+
+// ─── BOOT ────────────────────────────────────────────────────────────────────
+if (token && currentUser) {
+  initApp();
+}
+</script>
+</body>
+</html>
